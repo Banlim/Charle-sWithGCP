@@ -28,3 +28,9 @@ dependencies {
     //ted permission
     implementation "gun0912.ted:tedpermission:2.1.0"
 }
+
+android {
+    defaultConfig {
+        applicationId "com.charles.test1"
+    }
+}
