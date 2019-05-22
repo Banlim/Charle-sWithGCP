@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "507581258009",
+    "firebase_url": "https://charls-2019.firebaseio.com",
+    "project_id": "charls-2019",
+    "storage_bucket": "charls-2019.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507581258009:android:d22c800082a38497",
+        "android_client_info": {
+          "package_name": "org.techtown.charleproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507581258009-55cfhqbfs9vvv4ms3tq1ukamu2npqbkb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUV0NOC7-VEpvr17aRT9lr5fe7PtVoHpM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507581258009-3pfcklsag3sc1r40akjg2fis01dlgmqm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
