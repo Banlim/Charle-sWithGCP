@@ -1,10 +1,12 @@
 package org.techtown.charleproject;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -24,9 +26,13 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFace;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 //import java.sql.Date;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -37,7 +43,7 @@ import java.util.List;
 public class LoadActivity extends AppCompatActivity {
     private ArrayList<File> resultFile; // 내부 저장소 이미지 파일 배열
     private ArrayList<File> updateImageFileArr; // 업데이트 이미지 파일 배열
-   // private int prevImageCount; // 내부 저장소 이전 이미지 파일 개수
+   //private int ImageCount; // 내부 저장소 이미지 파일 개수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,45 @@ public class LoadActivity extends AppCompatActivity {
                         1);
             }
         }
+    }
+    private void cacheWrite(int ImageFileCount){
+        String cacheFileName = "cacheFile.txt";
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String ImageFileCountString = String.valueOf(ImageFileCount);
+        Log.d("TimeStamp", timeStamp);
+        Log.d("cacheFilePath", this.getFilesDir().getAbsolutePath());
+
+        try{
+            FileOutputStream os = openFileOutput(cacheFileName, Context.MODE_PRIVATE);
+            os.write(timeStamp.getBytes());
+            os.write("\n".getBytes());
+            os.write(ImageFileCountString.getBytes());
+            os.flush();
+            os.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    private String[] cacheRead(String cacheFileName){
+        // cacheReadFile[0] : timeStamp
+        // cacheReadFile[1] : FileCount
+        String[] cacheReadFile = new String[2];
+
+        try{
+            FileInputStream is = openFileInput(cacheFileName);
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
+            cacheReadFile[0] = buffer.readLine();
+            cacheReadFile[1] = buffer.readLine();
+            buffer.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        Log.d("cacheTimeStamp", cacheReadFile[0]);
+        Log.d("cacheFileCount", cacheReadFile[1]);
+        
+        return cacheReadFile;
     }
     public void init(){
         checkPermission();
