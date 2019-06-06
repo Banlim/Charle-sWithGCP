@@ -81,18 +81,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         resultFile = new ArrayList<>();
         updateImageFileArr = new ArrayList<>();
-        //checkPermission();
+        checkPermission();
         init();
 
-        /*
-        Button button = (Button) findViewById(R.id.return_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        */
         Handler handler = new Handler(){
             public void handleMessage(Message msg){
                 super.handleMessage(msg);
@@ -115,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
                         .setMinFaceSize(0.2f)
                         .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance().getVisionFaceDetector(options);
-        // FirebaseVisionImageLabeler labeler = FirebaseVision.getInstance().getCloudImageLabeler(labelerOptions);
 
         FirebaseVisionImageMetadata metadata = new FirebaseVisionImageMetadata.Builder()
                 .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
@@ -134,15 +124,11 @@ public class MainActivity extends AppCompatActivity {
                         new OnSuccessListener<List<FirebaseVisionFace>>() {
                             @Override
                             public void onSuccess(List<FirebaseVisionFace> firebaseVisionFaces) {
-                                //  editText.setText("Success");
                                 for (FirebaseVisionFace face : firebaseVisionFaces) {
                                     FirebaseVisionFace firebaseVisionFace;
 
                                     if (face.getRightEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
-                                        //editText.setText("Success");
-                                        //faceList.add(tempFile);
-                                        //imageView.setImageBitmap(bt2);
-                                        Log.d("호이이잇", "성공");
+
                                         Log.d(TAG, "****************************");
                                         Log.d(TAG, "face [" + face + "]");
                                         Log.d(TAG, "Smiling Prob [" + face.getSmilingProbability() + "]");
@@ -153,10 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                                     } else {
-                                        // 사실상 else문은 필요 없는 듯
-                                        // imageView.setImageBitmap(bt3);
-                                        Log.d("오잉용용", "notSucess");
-                                        //editText.setText("notSuccess");
+                                        Log.d("FirebaseVisionFace", "notSucess");
                                     }
                                 }
 
@@ -167,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                                 new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.d("오잉용잉", "failure");
+                                        Log.d("FirebaseVisionFace", "failure");
                                     }
                                 });
     }
@@ -250,12 +233,12 @@ public class MainActivity extends AppCompatActivity {
         String externalPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         String tempPath = externalPath+"/abc";
         String cacheFileName = "cacheFile.txt";
-        String internalPath = this.getFilesDir().getAbsolutePath()+"/"+cacheFileName;
+        String internalPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/"+cacheFileName;
         File file = new File(internalPath);
 
         if(cacheFileName.equals(file.getName())){
             // 앱 처음 실행 시
-            ImageCount = firstImagePathArrayCount(tempPath);
+            ImageCount = firstImagePathArrayCount(externalPath);
             personSeparate(resultFile);
             cacheWrite(updateImageCount);
         }
@@ -263,10 +246,10 @@ public class MainActivity extends AppCompatActivity {
             // 이미지 업데이트 할 시
             String[] cacheFile = cacheRead(cacheFileName);
             Date date;
-            if(updateCheckImagePathArray(tempPath, Integer.parseInt(cacheFile[0]))){
+            if(updateCheckImagePathArray(externalPath, Integer.parseInt(cacheFile[0]))){
                 try {
                     date = stringToDate(cacheFile[1]);
-                    updateImageFileArr = updateImagePathArray(tempPath, date);
+                    updateImageFileArr = updateImagePathArray(externalPath, date);
                     personSeparate(updateImageFileArr);
                     cacheWrite(ImageCount);
                 } catch (ParseException e) {
@@ -283,14 +266,10 @@ public class MainActivity extends AppCompatActivity {
         // 캐시 파일이 있다면, 캐시 파일에 저장된 이미지 파일 개수를 비교하는 updateCheckImagePathArray 함수를 호출한다.
         // update 해야한다고 리턴값이 나오면, updateImagePathArray 함수를 호출한다.
         // update~~함수의 결과값을 통해 personSeparate 함수를 호출하여 업데이트 해야할 이미지 파일들만 모델로 전송한다.
-
-        // 요런 내용을 곧 코드로 짤 계획이다.
-        // 다 작성하면 주석 지워야징
     }
     public static boolean checkExternalAvailable(){
 
         // 외부저장소 사용할 수 있는지 확인하는 함수
-        // 근데 쓸지 안 쓸지는 잘 모르겠음
 
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)){
@@ -427,19 +406,12 @@ public class MainActivity extends AppCompatActivity {
     public void personSeparate(ArrayList<File> imageFileArray){
         // 인물인지 아닌지 분류하는 함수
         // Firebase -> ML Kit face Detction 이용
-        Log.d("person", "호잇");
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance().getVisionFaceDetector();
         Bitmap bitmap;
-       // Bitmap bitmap1 = BitmapFactory.decodeFile(imageFileArray.get(4).getAbsolutePath());
-        //ImageView imageView = (ImageView)findViewById(R.id.imageView);
-       // String btEncode = image2base64(bitmap1);
-       // Bitmap btDecode = decodeBase64(btEncode);
-        //imageView.setImageBitmap(btDecode);
 
         ExifInterface exif;
         for(int i = 0; i < imageFileArray.size(); i++) {
             try {
-                Log.d("firefire", "들어왔는가");
                 exif = new ExifInterface(imageFileArray.get(i).getAbsolutePath());
                 bitmap = BitmapFactory.decodeFile(imageFileArray.get(i).getAbsolutePath());
                 String date;
@@ -474,12 +446,6 @@ public class MainActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
         byte[] ba = bos.toByteArray();
         imageCode = Base64.encodeToString(ba, Base64.DEFAULT);
-        Log.d("encodeSize : ", Integer.toString(imageCode.length()));
-
-        String hexStr = byteArrayToHex(ba);
-        Log.d("hex : ", hexStr);
-
-        Log.d("encode : ", imageCode);
         return imageCode;
     }
     public static Bitmap decodeBase64(String input){
@@ -516,11 +482,6 @@ public class MainActivity extends AppCompatActivity {
             String imageEncode = (String)params[2]; // base64 인코딩
             String imageName = (String)params[3];
 
-            String lineEnd = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "*****";
-
-
             String tmpimage = imageEncode;
             try {
                 tmpimage = URLEncoder.encode(imageEncode, StandardCharsets.UTF_8.name());
@@ -540,8 +501,6 @@ public class MainActivity extends AppCompatActivity {
                 httpURLConnection.setReadTimeout(20000); // 5초 안에 응답이 없으면 Exception
                 httpURLConnection.setConnectTimeout(20000); // 5초 안에 연결이 되지 않으면 Exception
                 httpURLConnection.setRequestMethod("POST"); // POST 방식으로 요청
-                //httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
-                //httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
                 httpURLConnection.connect();
 
 
@@ -549,10 +508,6 @@ public class MainActivity extends AppCompatActivity {
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
-
-                //DataOutputStream dos = new DataOutputStream(httpURLConnection.getOutputStream());
-                //dos.writeBytes(twoHyphens+boundary+lineEnd);
-               // dos.writeBytes(Content-Disposition:form-data;imageDate=\"imageDate\";imageEncode);
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
                 Log.d("responseStatusCode", "POST response code - " + responseStatusCode);
