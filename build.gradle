@@ -7,12 +7,11 @@ buildscript {
         
     }
     dependencies {
-        //classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.android.tools.build:gradle:3.4.1'
-        // json 파일 넣었는데 왜 패키지 이름이 test1이 뜨는 것인가...ㅠㅠ
-        // 왜 test1이 뜨는지 이유를 찾았다..
-        classpath 'com.google.gms:google-services:4.2.0' // Google Services plugin
-        classpath 'com.google.firebase:firebase-ml-vision:19.0.3' // firebase ml-kit
+        // classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.google.gms:google-services:4.2.0'  // Google Services plugin
+        classpath 'com.google.firebase:firebase-ml-vision:19.0.3'
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -29,4 +28,3 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
