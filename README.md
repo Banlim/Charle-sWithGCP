@@ -4,7 +4,7 @@
 #### Charle-s project
 * GCP를 이용한 이미지 분석 모델 설계 및 Android Application 구현
   + 시스템 구조도
-  > <img src="./img/system.jpg">
+  > <img src="./img/system.png">
   </br>
   + GCP를 이용한 이미지 분석 모델 구축 </br>
   > + Google Cloud Platform의 AutoML Vision API를 통해 이미지 분류 모델을 생성한다. </br>
@@ -31,8 +31,8 @@
 </br>
 
 ### Result
-> <img src="./img/loading.jpg" width="150" height="362">
-> <img src="./img/main.jpg" width="152" height="362">
+> <img src="./img/loading.png" width="150" height="362">
+> <img src="./img/main.png" width="152" height="362">
 </br>
 </br>
 
